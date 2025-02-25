@@ -1,24 +1,10 @@
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../config/supabase';
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 
 export const useAuth = () => {
-  const navigate = useNavigate();
-
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/login');
-  };
-
-  return {
-    signIn,
-    signOut,
-  };
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
