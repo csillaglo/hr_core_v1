@@ -1,0 +1,9 @@
+{
+  "common": {
+    "dashboard": "Vezérlőpult",
+    "employees": "Dolgozók",
+    "organizations": "Szervezetek",
+    "login": "Bejelentkezés",
+    "logout": "Kijelentkezés"
+  }
+}

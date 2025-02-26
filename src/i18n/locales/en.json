@@ -1,0 +1,9 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "employees": "Employees",
+    "organizations": "Organizations",
+    "login": "Login",
+    "logout": "Logout"
+  }
+}

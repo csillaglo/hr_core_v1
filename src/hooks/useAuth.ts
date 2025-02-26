@@ -1,38 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase';
-import type { AuthState } from '../types/supabase';
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import { User } from '@supabase/supabase-js'
 
-export const useAuth = () => {
-  const { data, isLoading } = useQuery<AuthState>({
-    queryKey: ['auth'],
-    queryFn: async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (error) throw error;
-      
-      if (!session) {
-        return { user: null, loading: false };
-      }
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-      const { data: userRole } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .single();
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+      setIsLoading(false)
+    })
 
-      return {
-        user: {
-          id: session.user.id,
-          email: session.user.email!,
-          role: userRole?.role || 'employee',
-        },
-        loading: false,
-      };
-    },
-  });
+    return () => subscription.unsubscribe()
+  }, [])
 
-  return {
-    user: data?.user ?? null,
-    loading: isLoading,
-  };
-};
+  return { user, isLoading }
+}
