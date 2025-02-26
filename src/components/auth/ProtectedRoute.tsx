@@ -1,14 +1,13 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { hasRole } from '../../lib/permissions';
-import type { UserRole } from '../../types/auth';
+import { useAuth } from '../../hooks/useAuth';
+import type { UserRole } from '../../types/supabase';
 
-interface RequireAuthProps {
+interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles?: UserRole[];
 }
 
-export const RequireAuth = ({ children, allowedRoles }: RequireAuthProps) => {
+export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -20,7 +19,7 @@ export const RequireAuth = ({ children, allowedRoles }: RequireAuthProps) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles && !allowedRoles.some(role => hasRole(user.role, role))) {
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 

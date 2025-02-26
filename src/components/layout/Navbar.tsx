@@ -1,32 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 
-const Navbar = () => {
+export const Navbar = () => {
   const { t } = useTranslation();
-  const { signOut } = useAuth();
-
+  
   return (
-    <nav className="bg-white shadow">
-      <div className="container mx-auto px-4">
+    <nav className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link to="/" className="flex items-center">
-              HR Core
+              <span className="text-xl font-semibold">HR Core</span>
             </Link>
-          </div>
-          <div className="flex items-center">
-            <button
-              onClick={signOut}
-              className="ml-4 px-4 py-2 rounded bg-red-500 text-white"
-            >
-              {t('common.logout')}
-            </button>
           </div>
         </div>
       </div>
     </nav>
   );
-}
-
-export default Navbar;
+};

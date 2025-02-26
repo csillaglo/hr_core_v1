@@ -1,23 +1,18 @@
-import { ReactNode } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { UserRole } from '../../types/auth';
+import { usePermissions } from '../../hooks/usePermissions';
+import type { Permission } from '../../types/auth';
 
 interface PermissionGuardProps {
-  children: ReactNode;
-  allowedRoles: UserRole[];
-  organizationId?: string;
+  children: React.ReactNode;
+  permission: Permission;
+  fallback?: React.ReactNode;
 }
 
-export const PermissionGuard = ({ children, allowedRoles, organizationId }: PermissionGuardProps) => {
-  const { user } = useAuth();
+export const PermissionGuard = ({ children, permission, fallback = null }: PermissionGuardProps) => {
+  const { can } = usePermissions();
 
-  if (!user) return null;
+  if (!can(permission)) {
+    return <>{fallback}</>;
+  }
 
-  const hasPermission = allowedRoles.some(role => 
-    user.roles.some(userRole => 
-      userRole.role === role && 
-      (!organizationId || userRole.organization_id === organizationId)
-    ));
-
-  return hasPermission ? <>{children}</> : null;
+  return <>{children}</>;
 };
